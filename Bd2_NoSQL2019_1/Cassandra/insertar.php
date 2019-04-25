@@ -1,3 +1,4 @@
+<?php if (!extension_loaded("cassandra")) die("Error: la extensión de cassandra es requerida."); ?>
 <?php
 /*
 	Creado por Sergio Alvarez
@@ -17,6 +18,8 @@ $categoria_id		= htmlspecialchars($_GET["categoria_id"]);
 $categoria_nombre	= htmlspecialchars($_GET["categoria_nombre"]);
 $dspublicacion		= htmlspecialchars($_GET["dspublicacion"]);
 
+date_default_timezone_set('America/Bogota');
+$fecha = strval(date("Y/m/d H:i:s"));
 					
 /*Validación de argumentos - */
 /*
@@ -35,18 +38,20 @@ echo 'dspublicacion='. 	$dspublicacion.'</br>';
 
 
 /* ==--> Aqui ustede debe hacer la conexion a la base de datos*/
-/*
+
 // Documentación en https://datastax.github.io/php-driver/features
 $cluster   = Cassandra::cluster()
                ->withContactPoints('127.0.0.1')
                ->build();
 // Seleccionar la base de datos
-$session   = $cluster->connect("CAMBIAR_ESTE_NOMBRE_CON_EL_NOMBRE_DEL_KEY_SPACE");
-*/
+$session   = $cluster->connect("system");
+
 
 // Documentación en https://datastax.github.io/php-driver/features/#executing-queries
 // Documentación en https://datastax.github.io/php-driver/features/simple_statements/
 /* ==--> Se arma el Batch para insertar en tablas. Note que hay dos ejemplos de insert*/
+$statement = new Cassandra\SimpleStatement("INSERT INTO redes_sociales.usuario (usuarios_id,dsusuario,loguin_usuario,registro) VALUES ($usuario_id,$usuario_nombre,$usuario_login,$fecha)");
+$resultadoInsert    = $session->execute($statement);
 /*
 $batch = new Cassandra\BatchStatement(Cassandra::BATCH_UNLOGGED);
 	// Ejemplo de tabla Qn con las columnas x,y,z,w. Y se usan las variables $v_x, $v_y, $v_z, $v_w. Note que las columnas x, w son tipo texto

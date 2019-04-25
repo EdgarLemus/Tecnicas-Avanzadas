@@ -1,7 +1,7 @@
 <?php
 /*
 	Creado por Sergio Alvarez
-	Version 1.0 - 2019/03/30
+	Version 1.01 - 2019/04/23
 	Tecnicas avanzadas de base de datos - UDEM
 	
   _   _  ____        __  __           _ _  __ _                
@@ -14,8 +14,10 @@
 															   
 */
 
-	/*Usted debe cambiar esto segun su configuracion del proyecto (ubicacion dentro del wampp y el puerto del pache*/
-	$URL_HOME = 'http://localhost/Bd2_NoSQL2019_1/';
+	/*Leer el URL del servidor*/
+	$URL_HOME = $_SERVER['HTTP_REFERER'];
+	/*Si lo anterior NO FUNCIONA Usted debe cambiar esto segun su configuracion del proyecto (ubicacion dentro del wampp y el puerto del pache*/
+	//$URL_HOME = 'http://localhost/Bd2_NoSQL2019_1/';
 	//$URL_HOME = 'http://localhost:9090/Bd2_NoSQL2019_1/';
 
 	/*Se recuperan los argumentos*/

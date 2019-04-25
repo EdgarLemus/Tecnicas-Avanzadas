@@ -120,9 +120,10 @@ div {
 <div>
 <H3>Ingreso al módulo de redes sociales</H3>
 	<!-- Formulario de Ingreso -->
-	<form name="q1" action="home.php" method="get">
+	<form name="q1" action="registroFecha.php" method="get">
 		<!-- filtro_fecha con valor -1 indica que debe buscar y actualizar la fecha de ingreso -->
 		<input type="hidden" name="filtro_fecha" value="-1" >
+		<input type="hidden" name="codigo" value="1" >
 		<table>
 		  <tr><td>Usuario:</td><td><input type="text" name="login" value="stephanie"  maxlength="10"></td></tr>
 		  <tr><td>Clave:</td><td><!-- <input type="password" name="clave" value=""  maxlength="10"></td></tr> -->

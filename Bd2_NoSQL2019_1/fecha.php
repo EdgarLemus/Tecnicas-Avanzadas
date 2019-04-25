@@ -1,4 +1,12 @@
 <?php
+
+date_default_timezone_set('America/Bogota');
+$fecha = strval(date("Y/m/d H:i:s"));
+
+echo $fecha;
+?>
+
+<?php
 /*
 	Creado por Sergio Alvarez
 	Version 1.0 - 2019/03/30
@@ -9,13 +17,13 @@
 */
 
 /*Se recuperan los argumentos*/
-$tiempo				= htmlspecialchars($_GET["tiempo"]);
-$usuario_id			= htmlspecialchars($_GET["usuario_id"]);
-$usuario_login		= htmlspecialchars($_GET["usuario_login"]);
-$usuario_nombre		= htmlspecialchars($_GET["usuario_nombre"]);
-$categoria_id		= htmlspecialchars($_GET["categoria_id"]);
-$categoria_nombre	= htmlspecialchars($_GET["categoria_nombre"]);
-$dspublicacion		= htmlspecialchars($_GET["dspublicacion"]);
+$tiempo				= $_GET['tiempo'];
+$usuario_id			= (integer)$_GET['usuario_id'];
+$usuario_login		= $_GET['usuario_login'];
+$usuario_nombre		= $_GET['usuario_nombre'];
+$categoria_id		= $_GET['categoria_id'];
+$categoria_nombre	= $_GET['categoria_nombre'];
+$dspublicacion		= $_GET['dspublicacion'];
 
 date_default_timezone_set('America/Bogota');
 $fecha = strval(date("Y/m/d H:i:s"));
@@ -43,9 +51,13 @@ if ($mysqli->connect_errno) {
 /* ==--> Se arma el Insert*/
 // Documentación https://www.php.net/manual/es/mysqli-stmt.bind-param.php
 /* Sentencia preparada, etapa 1: preparación */
-$stmt = $mysqli->prepare("INSERT INTO usuarios (idusuario,dsusuario,loguinUsuario,fechaIngreso) VALUES ($usuario_id, '$usuario_nombre', '$usuario_login', '$fecha');");
-$sq = "INSERT INTO grupos (idgrupo,dsgrupo) VALUES ($categoria_id, '$categoria_nombre');";
+//$stmt = $mysqli->prepare("INSERT INTO usuarios VALUES ($usuario_id, $usuario_nombre, $usuario_login, null)");
+//$sql = "INSERT INTO usuarios (idusuario,dsusuario,loguinUsuario,fechaIngreso) VALUES (intval($usuario_id), '$usuario_nombre', '$usuario_login', 'null')";
+//$mysqli->query($sql);
+
+$sq = "INSERT INTO usuarios (idusuario,dsusuario,loguinUsuario,fechaIngreso) VALUES ($usuario_id, '$usuario_nombre', '$usuario_login', '$fecha');";
 $result = $mysqli->query($sq);
+
 /* Sentencia preparada, etapa 2: Enlace*/
 /*
  types
@@ -59,22 +71,22 @@ $result = $mysqli->query($sq);
 	
 	En el ejemplo hay sssd significa 3 cadenas y decimal
 */
-/$stmt->bind_param('sssd', $code, $language, $official, $percent);
+//$mysqli->bind_param('sssd', $code, $language, $official, $percent);
 
-$code = 'COL';
-$language = 'Español';
-$official = "E";
-$percent = 98.0;
+//$code = 'COL';
+//$language = 'Español';
+//$official = "E";
+//$percent = 98.0;
 
 /* Sentencias preprada, etapa 3: ejecuta */
-$stmt->execute();
+//$sq->execute();
 
 //printf("%d Fila insertada.\n", $stmt->affected_rows);
 
 
 /* se recomienda el cierre explícito */
-$stmt->close();
-$mysqli->close();
+//$sq->close();
+//$mysqli->close();
 /*retornar el texto con resultado*/
 echo "OK";
 ?>
