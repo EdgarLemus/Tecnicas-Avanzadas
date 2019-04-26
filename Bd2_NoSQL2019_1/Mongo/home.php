@@ -186,8 +186,8 @@ try {
 																											$resultMain2 = $manager->executeQuery('redes_sociales2.grupos_has_usuarios', $queryMain2);
 																											foreach ($resultMain2 as $doc3) {
 																												if ($doc3->principal == 'N') {
-																														echo $doc3->grupos_idgrupo;
-																													}
+																													echo $doc3->grupos_idgrupo;
+																												}
 																											}
 																											?>
 					</h6>
