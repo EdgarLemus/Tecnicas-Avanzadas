@@ -28,6 +28,7 @@ try {
 	};
 	// Se obtiene el grupo principal del usuario para traer la lista de eventos
 	$varMain = 0;
+	$varOthers = array('test');
 	$filterMain = ['$and' => [['usuarios_idusuarios' => $usuario->idusuario], ['principal' => 'Y']]];
 	$queryMain = new MongoDB\Driver\Query($filterMain, $options);
 	$resultMain = $manager->executeQuery('redes_sociales2.grupos_has_usuarios', $queryMain);
@@ -35,6 +36,8 @@ try {
 	foreach ($resultMain as $documentMain) {
 		if ($documentMain->principal == 'Y') {
 			$varMain = $documentMain->grupos_idgrupo;
+		} else {
+			array_push($varOthers, $documentMain->grupos_idgrupo);
 		}
 	}
 
@@ -42,12 +45,10 @@ try {
 		header('Location: index.php');
 	}
 	if ($_POST) {
-			$mensaje = $_POST['mensaje'];
-			header("location:comentario.php?usuario=$usuario->idusuario&grupo=$varMain&comentario=$mensaje&login=$login");
-			// header("location:comentario.php?idgrupo=$grupoPrincipal&mensaje=$mensaje&idusuario=$idusuario&fecha=$fecha");
-		}
-
-	
+		$mensaje = $_POST['mensaje'];
+		header("location:comentario.php?usuario=$usuario->idusuario&grupo=$varMain&comentario=$mensaje&login=$login");
+		// header("location:comentario.php?idgrupo=$grupoPrincipal&mensaje=$mensaje&idusuario=$idusuario&fecha=$fecha");
+	}
 } catch (MongoDB\Driver\Exception\Exception $e) {
 	$filename = basename(__FILE__);
 	echo "El script $filename tine un error.\n";
@@ -98,8 +99,8 @@ try {
 										$resultDetailEvent = $manager->executeQuery('redes_sociales2.eventos', $queryDetailEvent);
 										foreach ($resultDetailEvent as $documentDetailEvent) {
 											?>
-											<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/asistencias.php?idevento=<?php echo $documentEvent->eventos_idevento; ?>&usuario=<?php echo $login?>&idusuario=<?php echo $usuario->idusuario?>&asistencias=<?php echo $documentDetailEvent->asistencias ?>"><img src="https://img.icons8.com/metro/15/000000/calendar.png"></a>
-							 <?php echo $documentEvent->eventos_idevento ?> Asistencia (<?php echo $documentDetailEvent->asistencias ?>) <?php echo $documentDetailEvent->dsevento ?>
+							<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/asistencias.php?idevento=<?php echo $documentEvent->eventos_idevento; ?>&usuario=<?php echo $login ?>&idusuario=<?php echo $usuario->idusuario ?>&asistencias=<?php echo $documentDetailEvent->asistencias ?>"><img src="https://img.icons8.com/metro/15/000000/calendar.png"></a>
+							<?php echo $documentEvent->eventos_idevento ?> Asistencia (<?php echo $documentDetailEvent->asistencias ?>) <?php echo $documentDetailEvent->dsevento ?>
 						<?php } ?>
 
 					<?php } ?></div>
@@ -118,8 +119,8 @@ try {
 				foreach ($resultComments as $documentComments) {
 					?>
 					<div align-left>
-					<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/likes.php?idcomentario=<?php echo $documentComments->idcomentario; ?>&usuario=<?php echo $usuario->dsusuario?>&likes=<?php echo $documentComments->likes?>"><img src="https://img.icons8.com/metro/15/000000/hearts.png"></a>
-				           (Nro me gusta <?php echo $documentComments->likes ?>)
+						<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/likes.php?idcomentario=<?php echo $documentComments->idcomentario; ?>&usuario=<?php echo $usuario->dsusuario ?>&likes=<?php echo $documentComments->likes ?>"><img src="https://img.icons8.com/metro/15/000000/hearts.png"></a>
+						(Nro me gusta <?php echo $documentComments->likes ?>)
 						<?php echo $documentComments->dscomentario ?>
 					</div>
 				<?php } ?>
@@ -138,6 +139,62 @@ try {
 		</div>
 	</div>
 
+	<div id="openModal" class="modalDialog">
+		<div>
+			<a href="#close" title="Close" class="close">X</a>
+			<Table>
+				<tr>
+					<td>Evento</td>
+					<td>
+						<h6> - </h6>
+					</td>
+					<td>Fecha</td>
+				</tr>
+				<?php
+				$filterUserEvents = ['$and' => [['usuarios_idusuario' => $usuario->idusuario]]];
+				$queryUserEvents  = new MongoDB\Driver\Query($filterUserEvents, $options);
+				$resultUserEvents = $manager->executeQuery('redes_sociales2.usuarios_has_eventos', $queryUserEvents);
+				foreach ($resultUserEvents as $docUserEvents) {
+					?>
+					<?php
+					$filter2 = ['$and' => [['idevento' => $docUserEvents->eventos_idevento]]];
+					$query2 = new MongoDB\Driver\Query($filter2, $options);
+					$result2 = $manager->executeQuery('redes_sociales2.eventos', $query2);
+					foreach ($result2 as $doc2) {
+						?>
+						<div>
+							<?php echo $doc2->dsevento ?> <?php echo $doc2->fechaEvento ?>
+						</div>
+					<?php } ?>
+				<?php } ?>
+			</Table>
+		</div>
+	</div>
+	</div>
+
 </body>
+<footer>
+	<div class="container">
+		<div class="panel panel-default">
+			<div class="panel-body" id="Layer1" align="left">
+				<div>
+					<h6>Usuario: <?php echo $usuario->dsusuario ?> - Grupo Principal: <?php
+																						echo $varMain
+																						?> - Otros Grupos: <?php
+																											$filterMain2 = ['$and' => [['usuarios_idusuarios' => $usuario->idusuario]]];
+																											$queryMain2 = new MongoDB\Driver\Query($filterMain2, $options);
+																											$resultMain2 = $manager->executeQuery('redes_sociales2.grupos_has_usuarios', $queryMain2);
+																											foreach ($resultMain2 as $doc3) {
+																												if ($doc3->principal == 'N') {
+																														echo $doc3->grupos_idgrupo;
+																													}
+																											}
+																											?>
+					</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
 
 </html>
