@@ -38,16 +38,16 @@ try {
 		}
 	}
 
-
-
 	if (!$var) {
 		header('Location: index.php');
 	}
 	if ($_POST) {
 			$mensaje = $_POST['mensaje'];
-			header("location:comentario.php?usuario=$usuario->idusuario&grupo=$varMain")
+			header("location:comentario.php?usuario=$usuario->idusuario&grupo=$varMain&comentario=$mensaje&login=$login");
 			// header("location:comentario.php?idgrupo=$grupoPrincipal&mensaje=$mensaje&idusuario=$idusuario&fecha=$fecha");
 		}
+
+	
 } catch (MongoDB\Driver\Exception\Exception $e) {
 	$filename = basename(__FILE__);
 	echo "El script $filename tine un error.\n";
@@ -98,7 +98,8 @@ try {
 										$resultDetailEvent = $manager->executeQuery('redes_sociales2.eventos', $queryDetailEvent);
 										foreach ($resultDetailEvent as $documentDetailEvent) {
 											?>
-							<img src="https://img.icons8.com/metro/15/000000/calendar.png"> <?php echo $documentEvent->eventos_idevento ?> Asistencia (<?php echo $documentDetailEvent->asistencias ?>) <?php echo $documentDetailEvent->dsevento ?>
+											<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/asistencias.php?idevento=<?php echo $documentEvent->eventos_idevento; ?>&usuario=<?php echo $login?>&idusuario=<?php echo $usuario->idusuario?>&asistencias=<?php echo $documentDetailEvent->asistencias ?>"><img src="https://img.icons8.com/metro/15/000000/calendar.png"></a>
+							 <?php echo $documentEvent->eventos_idevento ?> Asistencia (<?php echo $documentDetailEvent->asistencias ?>) <?php echo $documentDetailEvent->dsevento ?>
 						<?php } ?>
 
 					<?php } ?></div>
@@ -117,7 +118,8 @@ try {
 				foreach ($resultComments as $documentComments) {
 					?>
 					<div align-left>
-						<img src="https://img.icons8.com/metro/15/000000/hearts.png"> (Nro me gusta <?php echo $documentComments->likes ?>)
+					<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/likes.php?idcomentario=<?php echo $documentComments->idcomentario; ?>&usuario=<?php echo $usuario->dsusuario?>&likes=<?php echo $documentComments->likes?>"><img src="https://img.icons8.com/metro/15/000000/hearts.png"></a>
+				           (Nro me gusta <?php echo $documentComments->likes ?>)
 						<?php echo $documentComments->dscomentario ?>
 					</div>
 				<?php } ?>
