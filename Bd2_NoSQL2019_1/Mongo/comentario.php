@@ -1,8 +1,10 @@
 <?php
 if (isset($_GET["login"])) {
-    $login = htmlspecialchars($_GET["login"]);
+    $usuario = htmlspecialchars($_GET["usuario"]);
+    $grupo = htmlspecialchars($_GET["grupo"]);
+    $comentario = htmlspecialchars($_GET["comentario"]);
 } else {
-    echo "<H3>Falta el argumento login</H3>";
+    echo "<H3>Faltan argumentos</H3>";
     exit(0);
 }
 try {
