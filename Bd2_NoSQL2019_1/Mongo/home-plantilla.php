@@ -11,7 +11,6 @@
  | |\  | |__| |     | |  | | (_) | (_| | | | | | (_| (_| | |   
  |_| \_|\____/      |_|  |_|\___/ \__,_|_|_| |_|\___\__,_|_|   
                                                                
-
 	Notas: 
 	* No modificar. Sacar copia y renombrar 
 	* Esto es un ejemplo, que le ayude a hacer su trabajo
@@ -45,7 +44,6 @@ div {
 	padding: 20px 0;
 	border-bottom: solid 1px #ccc;
 }
-
 /* button 
 ---------------------------------------------- */
 .button {
@@ -75,7 +73,6 @@ div {
 	position: relative;
 	top: 1px;
 }
-
 .bigrounded {
 	-webkit-border-radius: 2em;
 	-moz-border-radius: 2em;
@@ -89,8 +86,6 @@ div {
 	font-size: 11px;
 	padding: .2em 1em .275em;
 }
-
-
 /* mi_color */
 .mi_color {
 	color: #e9e9e9;
@@ -112,7 +107,6 @@ div {
 	background: -moz-linear-gradient(top,  #575757,  #888);
 	filter:  progid:DXImageTransform.Microsoft.gradient(startColorstr='#575757', endColorstr='#888888');
 }
-
 </style>
 </head>
 
@@ -131,6 +125,7 @@ if( isset( $_GET["login"] ) ){
 }
 
 
+
 // Fecha de ultimo acceso -  para filtro. Valor igual a -1 (menos uno) indica que debe consultar y actualizar
 if( isset( $_GET["filtro_fecha"] ) ){
 	$filtro_fecha = htmlspecialchars($_GET["filtro_fecha"]);
@@ -139,13 +134,17 @@ if( isset( $_GET["filtro_fecha"] ) ){
 	exit(0);
 }
 
-/* ==--> Aqui ustede debe hacer la conexion a la base de datos*/
-// Documentación https://www.php.net/manual/es/class.mongodb-driver-manager.php
-try {
-	$manager = new MongoDB\Driver\Manager("mongodb://localhost:27017");
 
+
+
+/* ==--> Aqui ustede debe hacer la conexion a la base de datos*/
+// Documentaciï¿½n https://www.php.net/manual/es/class.mongodb-driver-manager.php
+try {
+
+	$manager = new MongoDB\Driver\Manager("mongodb://localhost:27017");
+	$bulk = new MongoDB\Driver\BulkWrite;
 	/* ==--> Aqui ustede debe validar el usuario*/
-	// Documentación en https://www.php.net/manual/es/mongodb-driver-manager.executequery.php
+	// Documentaciï¿½n en https://www.php.net/manual/es/mongodb-driver-manager.executequery.php
 	$filter = ['x' => ['$gt' => 1]];
 	$options = [
 		'maxTimeMS' => 1000,
@@ -153,7 +152,7 @@ try {
 	$query = new MongoDB\Driver\Query($filter, $options);
 	//echo $query;
 	/* ==--> Se ejecuta contra una base de datos y una colexion*/
-	$result = $manager->executeQuery('NOMBRE_DE_LA_BASE_DE_DATOS.NOMBRE_DE_LA_COLECCION', $query);
+	$result = $manager->executeQuery('redes_sociales2', $query);
 	// Se recupera el primer registro
 	$encontro_informacion_usuario = 0;
 	foreach ($result as $row) {
@@ -176,6 +175,11 @@ try {
 	exit(0);	
 }
 ?>
+
+
+
+
+
 
 <H3>Home</H3>
 	<!-- Sin Filtro por fecha -->
