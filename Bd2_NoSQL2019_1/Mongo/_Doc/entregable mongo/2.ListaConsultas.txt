@@ -1,0 +1,148 @@
+q1 validar el login
+
+// Se verifica que el usuario exista 
+	$filter = ['$and' => [
+		['dsusuario' => $login]
+	]];
+	$options = [];
+	$var = false;
+	$usuario = [];
+	$query = new MongoDB\Driver\Query($filter, $options);
+	$result = $manager->executeQuery('redes_sociales2.usuarios', $query);
+	foreach ($result as $document) {
+		//  echo "".$document->dsusuario; 
+		if ($document->dsusuario == $login) {
+			$var = true;
+			$usuario = $document;
+		}
+	};
+	
+	if (!$var) {
+		header('Location: index.php');
+	}
+  json prueba q1 
+
+{"_id":"5cc259b736cab01bc0ea7f6e",
+"dsusuario":"carlos","pass":"123",
+"fechaIngreso":"2019-04-26 03:06:28",
+"idusuario":"10720"}
+
+********************************
+q2 Obtener el grupo principal del usuario para traer la lista de eventos
+
+	$varMain = 0;
+	$filterMain = ['$and' => [['usuarios_idusuarios' => $usuario->idusuario], ['principal' => 'Y']]];
+	$queryMain = new MongoDB\Driver\Query($filterMain, $options);
+	$resultMain = $manager->executeQuery('redes_sociales2.grupos_has_usuarios', $queryMain);
+
+	foreach ($resultMain as $documentMain) {
+		if ($documentMain->principal == 'Y') {
+			$varMain = $documentMain->grupos_idgrupo;
+		} 
+	}
+json prueba q2
+
+{"_id":"5cc294257fd9cf1fe8514968","grupos_idgrupo":2,"usuarios_idusuarios":"10720","principal":"Y"}
+
+********************************
+q3 Eventos filtrados segun el grupo principal del usuario y contador de asistencia
+<?php
+				$filterEvents = ['$and' => [['grupos_idgrupo' => $varMain]]];
+				$queryEvents = new MongoDB\Driver\Query($filterEvents, $options);
+				$resultEvents = $manager->executeQuery('redes_sociales2.grupos_has_eventos', $queryEvents);
+				foreach ($resultEvents as $documentEvent) {
+					?>
+					<div align-left> <?php
+
+										$filterDetailEvent = ['$and' => [['idevento' => $documentEvent->eventos_idevento]]];
+										$queryDetailEvent = new MongoDB\Driver\Query($filterDetailEvent, $options);
+										$resultDetailEvent = $manager->executeQuery('redes_sociales2.eventos', $queryDetailEvent);
+										foreach ($resultDetailEvent as $documentDetailEvent) {
+											?>
+							<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/asistencias.php?idevento=<?php echo $documentEvent->eventos_idevento; ?>&usuario=<?php echo $login ?>&idusuario=<?php echo $usuario->idusuario ?>&asistencias=<?php echo $documentDetailEvent->asistencias ?>"><img src="https://img.icons8.com/metro/15/000000/calendar.png"></a>
+							<?php echo $documentEvent->eventos_idevento ?> Asistencia (<?php echo $documentDetailEvent->asistencias ?>) <?php echo $documentDetailEvent->dsevento ?>
+						<?php } ?>
+
+					<?php } ?></div>
+
+json de prueba q3
+
+grupos_has_eventos
+{"_id":"5cc28f8080fd151fe83dad81","grupos_idgrupo":2,"eventos_idevento":"7"}
+
+eventos
+{"_id":"5cc29a2580fd151fe83dad87","idevento":"7","dsevento":"Avengers end game","fechaEvento":"2019-04-27T05:00:00.000Z","asistencias":5004}
+
+********************************
+
+q4 comentarios del usuario y boton de me gusta
+
+	<div class="panel-body" id='Layer1' align-center style="overflow:auto">
+				<?php
+				$filterComments = ['$and' => [['usuarios_idusuario' => $usuario->idusuario]]];
+				$queryComments  = new MongoDB\Driver\Query($filterComments, $options);
+				$resultComments = $manager->executeQuery('redes_sociales2.comentarios', $queryComments);
+				foreach ($resultComments as $documentComments) {
+					?>
+					<div align-left>
+						<a href="http://localhost/tecnicas-avanzadas/Bd2_NoSQL2019_1/Mongo/likes.php?idcomentario=<?php echo $documentComments->idcomentario; ?>&usuario=<?php echo $usuario->dsusuario ?>&likes=<?php echo $documentComments->likes ?>"><img src="https://img.icons8.com/metro/15/000000/hearts.png"></a>
+						(Nro me gusta <?php echo $documentComments->likes ?>)
+						<?php echo $documentComments->dscomentario ?>
+					</div>
+				<?php } ?>
+			</div>
+
+json de prueba q4
+{"_id":"5cc2c1f4fe82ce2f68002790","usuarios_idusuario":"10720","grupos_idgrupo":"2","dscomentario":"Hola mundo en mongo","fecha":"2019-04-26 03:31:48","likes":2,"idcomentario":"23365"}
+
+
+*********************************
+
+q5 eventos a los que asistira el usuario
+
+		<?php
+				$filterUserEvents = ['$and' => [['usuarios_idusuario' => $usuario->idusuario]]];
+				$queryUserEvents  = new MongoDB\Driver\Query($filterUserEvents, $options);
+				$resultUserEvents = $manager->executeQuery('redes_sociales2.usuarios_has_eventos', $queryUserEvents);
+				foreach ($resultUserEvents as $docUserEvents) {
+					?>
+					<?php
+					$filter2 = ['$and' => [['idevento' => $docUserEvents->eventos_idevento]]];
+					$query2 = new MongoDB\Driver\Query($filter2, $options);
+					$result2 = $manager->executeQuery('redes_sociales2.eventos', $query2);
+					foreach ($result2 as $doc2) {
+						?>
+						<div>
+							<?php echo $doc2->dsevento ?> <?php echo $doc2->fechaEvento ?>
+						</div>
+					<?php } ?>
+				<?php } ?>
+
+
+
+json de prueba q5 
+  usuarios_has_eventos
+{"_id":"5cc2bbddfe82ce2f6800278e","usuarios_idusuario":"10720","eventos_idevento":"7"}
+  eventos
+{"_id":"5cc29a2580fd151fe83dad87","idevento":"7","dsevento":"Avengers end game","fechaEvento":"2019-04-27T05:00:00.000Z","asistencias":5004}
+
+
+*************************************
+q6 grupo principal y otros grupos 
+
+					<h6>Usuario: <?php echo $usuario->dsusuario ?> - Grupo Principal: <?php
+															echo $varMain
+																		?> - Otros Grupos: <?php
+																				$filterMain2 = ['$and' => [['usuarios_idusuarios' => $usuario->idusuario]]];
+																				$queryMain2 = new MongoDB\Driver\Query($filterMain2, $options);
+																				$resultMain2 = $manager->executeQuery('redes_sociales2.grupos_has_usuarios', $queryMain2);
+																				foreach ($resultMain2 as $doc3) {
+																			         if ($doc3->principal == 'N') {
+																						echo $doc3->grupos_idgrupo;
+																								}}?>	</h6>
+json q6
+{"_id":"5cc294257fd9cf1fe8514968","grupos_idgrupo":2,"usuarios_idusuarios":"10720","principal":"Y"}
+
+	
+
+
