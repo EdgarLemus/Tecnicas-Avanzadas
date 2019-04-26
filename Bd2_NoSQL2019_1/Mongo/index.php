@@ -123,8 +123,9 @@ div {
 		<!-- filtro_fecha con valor -1 indica que debe buscar y actualizar la fecha de ingreso -->
 		<input type="hidden" name="filtro_fecha" value="-1" >
 		<table>
-		  <tr><td>Usuario:</td><td><input type="text" name="login" value="stephanie"  maxlength="10"></td></tr>
-		  <tr><td>Clave:</td><td><!-- <input type="password" name="clave" value=""  maxlength="10"></td></tr> -->
+		  <tr><td>Usuario:</td><td><input type="text" name="login" value=""  maxlength="10"></td></tr>
+		  <tr><td>Clave:</td><td>
+		  <input type="password" name="clave" value=""  maxlength="10"></td></tr>
 		  <tr></tr><td> </td><tr><td> </td></tr><tr><td> </td></tr>
 		  <tr><td colspan="2"><button class="button mi_color">Ingreso</button></td></tr>
 		</table>  
