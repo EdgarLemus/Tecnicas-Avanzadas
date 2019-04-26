@@ -1,0 +1,26 @@
+Q1 -- Seleccionar todo de usuarios donde el login usuario sea igual a usuario
+"SELECT * FROM chatU.usuarios WHERE loguinUsuario = '$usuario';"
+
+Q2-- Número de comentarios por chat
+"SELECT count(*) as cuenta FROM chatU.comentarios;"
+
+Q3-- Trae todo del chat por usuario
+"SELECT * FROM chatU.usuarios;"
+
+Q4--Selecciona todo de usuario por grupos donde el usuario exista
+"SELECT * FROM chatU.usuarios_has_grupos WHERE usuarios_idusuario = $idusuario"
+
+Q5-- Seleccionar todo de usuarios por eventos donde el usuario exista
+"SELECT * FROM chatU.usuarios_has_eventos WHERE usuarios_idusuario = $idusuario"
+
+Q6-- Trae todo del chat por eventos 
+"SELECT * FROM chatU.eventos WHERE idevento = $ideventos"
+
+Q8-- Trae todo del chat por grupo donde el grupo SI sea principal
+"SELECT * FROM chatU.grupos WHERE idgrupo = $grupoPrincipal"
+
+Q9-- Trae todo del chat por grupo donde el grupo NO sea principal
+"SELECT * FROM chatU.grupos WHERE idgrupo = $noPrincipal"
+
+Q10-- Trae todo de los comentarios por chat donde el id comentario sea el mismo
+"SELECT * FROM chatU.comentarios where idcomentario = $idcomentario;"
